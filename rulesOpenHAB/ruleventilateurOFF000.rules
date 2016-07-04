@@ -1,0 +1,6 @@
+rule ventilateurOFF000
+when
+	Time cron "0 0 0 * * ?"
+then
+	sendCommand(ventilateur,OFF)
+end

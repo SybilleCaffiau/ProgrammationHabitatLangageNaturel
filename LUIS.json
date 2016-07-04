@@ -1,0 +1,22 @@
+{
+  "query": "avoir 8h ",
+  "intents": [
+    {
+      "intent": "None",
+      "score": 0.857812047
+    },
+    {
+      "intent": "RegleTemporelle",
+      "score": 0.4052584
+    },
+    {
+      "intent": "RegleEtat",
+      "score": 3.55191474E-07
+    },
+    {
+      "intent": "RegleAction",
+      "score": 1.87591227E-11
+    }
+  ],
+  "entities": []
+}
