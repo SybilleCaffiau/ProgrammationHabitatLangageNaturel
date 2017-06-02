@@ -16,6 +16,7 @@ import core.objects.serializable.Device;
 import core.utils.ConfigurationLoadingException;
 import habitat.AmbiguityResolver;
 import habitat.Habitat;
+import habitat.Instruction;
 
 public class Program
 {
@@ -52,23 +53,12 @@ public class Program
 				new EventLeaf("volet roulant", "arrêter"),
 				new ConditionalNode("ou",
 						new EventLeaf("disco", "allumer"),
-						TimeLeaf.parse("midi"))
-				);
-		
-		
-		// COMMANDS
-		List<Command> commands = new ArrayList<Command>();
-		List<Device> devices = habitat.getDevices("camera", "cuisine");
-		devices.forEach(device -> 
-		{
-			try { commands.addAll(device.getCommands("allumer")); }  catch (Exception e)  { System.err.println(e.getMessage()); }
-		});
-		
+						TimeLeaf.parse("midi")));
 		ConditionalTree tree = new ConditionalTree(node);
 		
-		Rule rule = new Rule("RuleTest", tree, commands);
-		System.out.println(rule.toOpenHabString());
-		rule.toOpenHabRuleFile("test");
+		System.out.println(habitat.generateRule("testRuleName", tree, 
+				new Instruction("camera", "chambre", "allumer"), 
+				new Instruction("disco", "eteindre")));
 	}
 
 }

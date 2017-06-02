@@ -8,8 +8,12 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import core.objects.rule.Command;
+import core.objects.rule.ConditionParsingException;
+import core.objects.rule.ConditionalTree;
 import core.objects.rule.DeviceNotFoundException;
 import core.objects.rule.LocationNotFoundException;
+import core.objects.rule.Rule;
 import core.objects.serializable.Device;
 import core.objects.serializable.Room;
 import core.objects.serializable.containers.Devices;
@@ -201,5 +205,16 @@ public class Habitat
 	public AmbiguityResolver getAmbiguityResolver()
 	{
 		return this.resolver;
+	}
+	
+	public String generateRule(String ruleName, ConditionalTree trigger, Instruction...instructions) throws ConditionParsingException, DeviceNotFoundException, LocationNotFoundException
+	{
+		List<Command> commands = new ArrayList<Command>();
+		for(Instruction instruction : instructions)
+		{
+			commands.addAll(instruction.getCommands(this));
+		}
+		Rule rule = new Rule(ruleName, trigger, commands);
+		return rule.toOpenHabString();
 	}
 }
