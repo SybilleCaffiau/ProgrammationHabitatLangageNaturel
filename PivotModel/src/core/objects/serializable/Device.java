@@ -12,9 +12,12 @@ import core.objects.rule.ConditionParsingException;
 import core.objects.rule.ServiceNotFoundException;
 import core.objects.serializable.containers.AssociatedServices;
 import core.objects.serializable.containers.Keywords;
+import core.objects.serializable.containers.Services;
 import habitat.AmbiguityResolver;
 import habitat.Habitat;
-
+/**
+ * @author Clément Didier
+ */
 @XmlRootElement(name="device")
 public class Device extends Identifiable 
 {
@@ -72,7 +75,7 @@ public class Device extends Identifiable
 	 * @throws ConditionParsingException Remontée lorsqu'une erreur de conversion des données est survenue lors de l'execution
 	 */
 	public List<Command> getCommands(String functionKeyword) throws ServiceNotFoundException, ConditionParsingException
-	{
+	{	
 		if(this.services.isEmpty()) 
 			throw new ServiceNotFoundException("L'appareil \"" + this.getId() + "\" ne possède aucun service");
 		
@@ -81,14 +84,13 @@ public class Device extends Identifiable
 		for(AssociatedService dservice : services.getList())
 		{
 			// Obtention du service générique si existant
-			Service service = Habitat.getInstance().getServices().getById(dservice.getServiceId());
+			Services services = Habitat.getInstance().getServices().getById(dservice.getServiceId());
 			
-			// Si service existant, sinon on l'ignore et on passe au suivant (flexibilité du modèle)
-			if(service != null)
+			for(Service service : services.getList())
 			{
 				for(Function function : service.getFunctions().getList())
 				{
-					if(function.getKeywords().exists(functionKeyword))
+					if(function.hasKeyword(functionKeyword))
 					{
 						// Le service générique connaît la command OpenHab mais n'est pas lié à un item (service générique)
 						// Ainsi on obtient l'item OpenHab référent avec l'AssociatedService (correspondant au service associé à l'appareil)
@@ -96,7 +98,6 @@ public class Device extends Identifiable
 					}
 				}
 			}
-			else continue; // On passe au suivant
 		}
 		
 		if(commands.isEmpty())

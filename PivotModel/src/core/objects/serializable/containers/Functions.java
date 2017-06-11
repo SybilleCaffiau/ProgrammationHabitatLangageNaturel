@@ -7,7 +7,9 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import core.objects.serializable.Function;
-
+/**
+ * @author Clément Didier
+ */
 @XmlRootElement(name="functions")
 public class Functions implements Container<Function>
 {
@@ -38,11 +40,14 @@ public class Functions implements Container<Function>
 	}
 
 	@Override
-	public Function getById(String id) {
+	public Functions getById(String id) {
+		Functions functions = new Functions();
+		
 		for(Function function : this.functions)
 			if(function.getId().equals(id))
-				return function;
-		return null;
+				functions.add(function);
+		
+		return functions;
 	}
 
 	@Override

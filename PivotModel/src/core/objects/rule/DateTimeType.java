@@ -1,5 +1,7 @@
 package core.objects.rule;
-
+/**
+ * @author Clément Didier
+ */
 public enum DateTimeType 
 {
 	/**

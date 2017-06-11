@@ -1,6 +1,7 @@
 package core.objects.rule;
 
 /**
+ * @author Clément Didier
  * Le contexte de convertion de données au format OpenHab
  */
 public enum ParsingContext {

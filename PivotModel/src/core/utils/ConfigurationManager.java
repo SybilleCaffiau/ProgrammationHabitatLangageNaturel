@@ -10,6 +10,7 @@ import javax.xml.bind.Unmarshaller;
 import habitat.Habitat;
 
 /**
+ * @author Clément Didier
  * Manageur de fichier de configuration
  */
 public class ConfigurationManager 

@@ -1,7 +1,9 @@
 package core.utils;
 
 import java.text.Normalizer;
-
+/**
+ * @author Clément Didier
+ */
 public class KeywordNormalizer 
 {
 	/**

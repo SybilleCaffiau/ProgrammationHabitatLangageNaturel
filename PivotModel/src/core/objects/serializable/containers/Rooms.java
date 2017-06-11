@@ -7,7 +7,9 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import core.objects.serializable.Room;
-
+/**
+ * @author Clément Didier
+ */
 @XmlRootElement(name="rooms")
 public class Rooms implements Container<Room>
 {
@@ -44,11 +46,14 @@ public class Rooms implements Container<Room>
 	}
 
 	@Override
-	public Room getById(String id) {
+	public Rooms getById(String id) {
+		Rooms rooms = new Rooms();
+		
 		for(Room room : this.rooms)
 			if(room.getId().equals(id))
-				return room;
-		return null;
+				rooms.add(room);
+		
+		return rooms;
 	}
 
 	@Override

@@ -15,12 +15,16 @@ import core.objects.rule.DeviceNotFoundException;
 import core.objects.rule.LocationNotFoundException;
 import core.objects.rule.Rule;
 import core.objects.serializable.Device;
+import core.objects.serializable.Function;
 import core.objects.serializable.Room;
+import core.objects.serializable.Service;
 import core.objects.serializable.containers.Devices;
 import core.objects.serializable.containers.Rooms;
 import core.objects.serializable.containers.Services;
 import core.utils.ConfigurationManager;
-
+/**
+ * @author Clément Didier
+ */
 @XmlRootElement(name="habitat")
 public class Habitat
 {
@@ -128,6 +132,36 @@ public class Habitat
 	public Services getServices() {
 		return services;
 	}
+	
+	/**
+	 * Obtient la liste des services génériques diposant du mot clé donné, avec prise en compte des mots clés des fonctions du service
+	 * @param keyword Le mot clé des services et fonctions des services recherchés
+	 * @return La liste des services génériques correspondants
+	 */
+	public Services getServices(String keyword) 
+	{
+		Services services = new Services();
+		for(Service service : this.services.getList())
+		{
+			boolean hasFunctionKeyword = false;
+			
+			for(Function function : service.getFunctions().getList())
+			{
+				if(function.hasKeyword(keyword))
+				{
+					hasFunctionKeyword = true;
+					break;
+				}
+			}
+			
+			if(service.hasKeyword(keyword) || hasFunctionKeyword)
+			{
+				services.add(service);
+			}
+		}
+		
+		return services;
+	}
 
 	/**
 	 * Obtient la liste des appareils de l'habitat
@@ -153,10 +187,17 @@ public class Habitat
 		
 		for(Device device : this.devices.getList())
 		{
-			Room room = this.rooms.getById(device.getRoomId());
-			if(device.hasKeyword(deviceKeyword) && room != null && room.hasKeyword(roomKeyword))
+			Rooms rooms = this.rooms.getById(device.getRoomId());
+			
+			if(rooms != null)
 			{
-				result.add(device);
+				for(Room room : rooms.getList())
+				{
+					if(device.hasKeyword(deviceKeyword) && room != null && room.hasKeyword(roomKeyword))
+					{
+						result.add(device);
+					}
+				}
 			}
 		}
 		

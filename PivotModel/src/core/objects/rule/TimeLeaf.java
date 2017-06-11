@@ -9,6 +9,7 @@ import core.formats.openhab.OpenHabFormats;
 import core.utils.KeywordNormalizer;
 
 /**
+ * @author Clément Didier
  * Représente une condition temporelle simple
  * Se limite actuellement à Heure:Minute:Seconde
  */

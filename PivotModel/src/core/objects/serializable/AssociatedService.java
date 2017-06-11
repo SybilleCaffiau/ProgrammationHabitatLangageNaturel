@@ -2,7 +2,9 @@ package core.objects.serializable;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
-
+/**
+ * @author Clément Didier
+ */
 @XmlRootElement(name="service")
 public class AssociatedService 
 {

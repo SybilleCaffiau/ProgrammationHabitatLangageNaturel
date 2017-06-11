@@ -5,10 +5,11 @@ import java.util.List;
 
 import core.formats.openhab.OpenHabFormats;
 import core.objects.serializable.Device;
-import core.utils.ConfigurationLoadingException;
 import habitat.AmbiguityResolver;
 import habitat.Habitat;
-
+/**
+ * @author Clément Didier
+ */
 public class EventLeaf extends Leaf 
 {
 	/**
@@ -20,7 +21,7 @@ public class EventLeaf extends Leaf
 	 * Etat permettant d'indiquer que l'instance fait référence à plusieurs objets ou non après désambiguisation
 	 * Permet de générer des conjonctions convenables dans les règles
 	 */
-	private boolean isMultipleDevices;
+	private boolean isMultipleCommands;
 	
 	private EventLeaf()
 	{
@@ -35,42 +36,16 @@ public class EventLeaf extends Leaf
 	 * demandé sont ignorés
 	 * @throws DeviceNotFoundException Remontée lorsqu'aucun appareil ne correspond au mot clé donné
 	 * @throws ConditionParsingException Remontée lorsqu'une erreur de conversion est survenue lors de l'execution
-	 * @throws ConfigurationLoadingException Remontée lorsqu'une erreur de lecture ou de chargement du fichier de configurations survient
+	 * @throws ServiceNotFoundException Remontée lorsque les appareils ne disposent pas du service demandé
 	 */
-	public EventLeaf(String deviceKeyword, String functionKeyword) throws DeviceNotFoundException, ConditionParsingException, ConfigurationLoadingException
+	public EventLeaf(String deviceKeyword, String functionKeyword) throws DeviceNotFoundException, ConditionParsingException, ServiceNotFoundException
 	{
 		this();
 		
 		List<Device> devices = Habitat.getInstance().getDevices(deviceKeyword);
 		if(devices.isEmpty())
 			throw new DeviceNotFoundException("L'appareil \"" + deviceKeyword + "\" est introuvable");
-		
-		// Ambiguité sur le quantifieur
-		if(devices.size() > 1)
-		{
-			AmbiguityResolver resolver = Habitat.getInstance().getAmbiguityResolver();
-			if(resolver != null)
-				devices = resolver.multipleDevicesFoundForOneFunctionAmbiguity(deviceKeyword, functionKeyword, devices);
-		}
-			
-		this.isMultipleDevices = devices.size() > 1;
-		
-		for(Device device : devices)
-		{
-			try
-			{
-				commands.addAll(device.getCommands(functionKeyword));
-				
-			}
-			catch(ServiceNotFoundException e)
-			{
-				System.err.println("L'objet \"" + device.getId() + "\" ne dispose pas de la fonction recherchée, il est donc ignoré");
-			}
-		}
-		
-		if(commands.isEmpty())
-			throw new DeviceNotFoundException("Aucun appareil \"" + deviceKeyword +
-					"\" ne dispose d'une fonction \"" + functionKeyword + "\"");
+		this.initialize(devices, deviceKeyword, functionKeyword);
 	}
 	
 	/**
@@ -83,8 +58,9 @@ public class EventLeaf extends Leaf
 	 * @throws LocationNotFoundException Remontée lorsque la localisation donnée n'a aucune correspondance
 	 * @throws DeviceNotFoundException Remontée lorsqu'aucun appareil ne correspond au mot clé donné
 	 * @throws ConditionParsingException Remontée lorsqu'une erreur de conversion est survenue lors de l'execution
+	 * @throws ServiceNotFoundException Remontée lorsque les appareils ne disposent pas du service demandé
 	 */
-	public EventLeaf(String deviceKeyword, String room, String functionKeyword) throws LocationNotFoundException, DeviceNotFoundException, ConditionParsingException
+	public EventLeaf(String deviceKeyword, String room, String functionKeyword) throws LocationNotFoundException, DeviceNotFoundException, ConditionParsingException, ServiceNotFoundException
 	{
 		this();
 		
@@ -92,7 +68,11 @@ public class EventLeaf extends Leaf
 		List<Device> devices = Habitat.getInstance().getDevices(deviceKeyword, room);
 		if(devices.isEmpty())
 			throw new DeviceNotFoundException("L'appareil \"" + deviceKeyword + "\" est introuvable à la localisation \"" + room +"\"");
-		
+		this.initialize(devices, deviceKeyword, functionKeyword);
+	}
+	
+	private void initialize(List<Device> devices, String deviceKeyword, String functionKeyword) throws ConditionParsingException, ServiceNotFoundException, DeviceNotFoundException
+	{
 		// Ambiguité sur le quantifieur
 		if(devices.size() > 1)
 		{
@@ -101,7 +81,7 @@ public class EventLeaf extends Leaf
 				devices = resolver.multipleDevicesFoundForOneFunctionAmbiguity(deviceKeyword, functionKeyword, devices);
 		}
 		
-		this.isMultipleDevices = devices.size() > 1;
+		boolean serviceNotFound = false;
 		
 		// Pour chacun d'eux
 		for(Device device : devices)
@@ -113,14 +93,23 @@ public class EventLeaf extends Leaf
 			}
 			catch(ServiceNotFoundException e)
 			{
+				serviceNotFound = true;
+				
 				// On ignore l'appareil s'il ne dispose pas de la fonction recherchée, on affiche un message pour renseigner
-				System.err.println("L'objet \"" + device.getId() + "\" ne dispose pas de la fonction recherchée, il est donc ignoré");
+				//System.err.println("L'objet \"" + device.getId() + "\" ne dispose pas de la fonction recherchée, il est donc ignoré");
 			}
 		}
 		
+		this.isMultipleCommands = commands.size() > 1;
+		
 		if(commands.isEmpty())
-			throw new DeviceNotFoundException("Aucun appareil \"" + deviceKeyword +
-					"\" ne dispose d'une fonction \"" + functionKeyword + "\"");
+		{
+			if(serviceNotFound)
+				throw new ServiceNotFoundException("Aucun appareil \"" + deviceKeyword +
+						"\" ne dispose d'une fonction \"" + functionKeyword + "\"");
+			
+			throw new DeviceNotFoundException("Aucun appareil ne correspond à \"" + deviceKeyword + "\"");
+		}
 	}
 
 	/**
@@ -184,12 +173,12 @@ public class EventLeaf extends Leaf
 	}
 	
 	/**
-	 * Obtient l'état d'information sur la quantité d'appareils pris en charge par l'évenement
+	 * Définit si l'évènement correspond à plusieurs commandes
 	 * Permet de générer convenablement des conjonctions dans les règles
-	 * @return L'état d'information sur la quantité d'appareils pris en charge
+	 * @return Vrai si l'évènement définit plsuieurs commandes, False dans le cas contraire
 	 */
-	public boolean isSupportingMultipleDevices()
+	public boolean isMutlipleCommands()
 	{
-		return this.isMultipleDevices;
+		return this.isMultipleCommands;
 	}
 }

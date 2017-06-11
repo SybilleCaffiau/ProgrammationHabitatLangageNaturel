@@ -1,7 +1,9 @@
 package core.objects.rule;
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * @author Clément Didier
+ */
 public enum ConditionalType {
 	/**
 	 * La condition "OU" permettant des disjonctions

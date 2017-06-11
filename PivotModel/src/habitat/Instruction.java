@@ -7,7 +7,9 @@ import core.objects.rule.Command;
 import core.objects.rule.DeviceNotFoundException;
 import core.objects.rule.LocationNotFoundException;
 import core.objects.serializable.Device;
-
+/**
+ * @author Clément Didier
+ */
 public class Instruction 
 {
 	private String device;
@@ -34,7 +36,8 @@ public class Instruction
 		List<Device> devices = (this.room != null) ? habitat.getDevices(this.device, this.room) : habitat.getDevices(this.device);
 		devices.forEach(device -> 
 		{
-			try { commands.addAll(device.getCommands(this.action)); }  catch (Exception e)  { System.err.println(e.getMessage()); }
+			try { commands.addAll(device.getCommands(this.action)); }  catch (Exception e)  { 
+				/*System.err.println(e.getMessage());*/ }
 		});
 		
 		if(commands.isEmpty())

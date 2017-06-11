@@ -4,7 +4,9 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import core.objects.serializable.containers.Keywords;
-
+/**
+ * @author Clément Didier
+ */
 @XmlRootElement(name="function")
 public class Function extends Identifiable 
 {

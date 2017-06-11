@@ -1,6 +1,7 @@
 package core.objects.rule;
 
 /**
+ * @author Clément Didier
  * Représente une feuille d'arbre conditionnel
  */
 public abstract class Leaf extends Node 

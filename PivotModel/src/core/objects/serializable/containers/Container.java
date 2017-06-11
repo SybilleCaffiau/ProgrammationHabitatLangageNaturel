@@ -1,7 +1,9 @@
 package core.objects.serializable.containers;
 
 import java.util.List;
-
+/**
+ * @author Clément Didier
+ */
 public interface Container<E>
 {	
 	/**
@@ -11,11 +13,11 @@ public interface Container<E>
 	public List<E> getList();
 	
 	/**
-	 * Obtient l'élément du conteneur ayant l'identifiant id
-	 * @param id L'identifiant de l'élément recherché
-	 * @return L'élément recherché si existant, null dans le cas contraire
+	 * Obtient les éléments du conteneur ayant l'identifiant id
+	 * @param id L'identifiant des éléments recherchés
+	 * @return Les éléments recherchés si existants
 	 */
-	public E getById(String id);
+	public Container<E> getById(String id);
 	
 	/**
 	 * Obtient l'état de remplissage du conteneur

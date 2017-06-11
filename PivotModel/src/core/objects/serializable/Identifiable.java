@@ -4,7 +4,9 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
 import core.objects.serializable.containers.Keywords;
-
+/**
+ * @author Clément Didier
+ */
 public abstract class Identifiable 
 {
 	/**

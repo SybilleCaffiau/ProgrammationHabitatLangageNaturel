@@ -6,7 +6,9 @@ import java.util.List;
 import core.objects.rule.Command;
 import core.objects.serializable.Device;
 import habitat.AmbiguityResolver;
-
+/**
+ * @author Clément Didier
+ */
 public class AmbiguityResolverExample implements AmbiguityResolver
 {
 	/**

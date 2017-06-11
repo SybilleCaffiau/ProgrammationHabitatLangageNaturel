@@ -6,6 +6,7 @@ import core.objects.rule.Command;
 import core.objects.serializable.Device;
 
 /**
+ * @author Clément Didier
  * Interface permettant de donner la main à un élément externe au modèle, afin de résoudre une ambiguité et de retourner à la position de traitement actuelle
  */
 public interface AmbiguityResolver 

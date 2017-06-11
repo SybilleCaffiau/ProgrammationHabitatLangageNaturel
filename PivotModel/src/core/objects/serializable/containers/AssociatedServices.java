@@ -6,7 +6,9 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 
 import core.objects.serializable.AssociatedService;
-
+/**
+ * @author Clément Didier
+ */
 public class AssociatedServices implements Container<AssociatedService> 
 {
 	
@@ -47,16 +49,19 @@ public class AssociatedServices implements Container<AssociatedService>
 	
 	@Override
 	/**
-	 * Obtient le service associé disposant de l'identifiant id
-	 * @param id L'identifiant du service associé recherché
-	 * @return Le service associé avec l'identifiant donné si existant, null dans le cas contraire
+	 * Obtient les services associés disposants de l'identifiant id
+	 * @param id L'identifiant des services associés recherchés
+	 * @return Les services associés avec l'identifiant donné si existants
 	 */
-	public AssociatedService getById(String id) 
+	public AssociatedServices getById(String id) 
 	{
+		AssociatedServices services = new AssociatedServices();
+		
 		for(AssociatedService service : this.services)
 			if(service.getServiceId().equals(id))
-				return service;
-		return null;
+				services.add(service);
+		
+		return services;
 	}
 
 	

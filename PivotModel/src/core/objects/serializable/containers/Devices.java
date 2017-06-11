@@ -7,7 +7,9 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import core.objects.serializable.Device;
-
+/**
+ * @author Clément Didier
+ */
 @XmlRootElement(name="devices")
 public class Devices implements Container<Device>
 {
@@ -45,11 +47,14 @@ public class Devices implements Container<Device>
 	}
 
 	@Override
-	public Device getById(String id) {
+	public Devices getById(String id) {
+		Devices devices = new Devices();
+		
 		for(Device device : this.devices)
 			if(device.getId().equals(id))
-				return device;
-		return null;
+				devices.add(device);
+		
+		return devices;
 	}
 
 	@Override

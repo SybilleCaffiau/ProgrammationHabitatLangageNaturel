@@ -5,7 +5,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import core.objects.serializable.containers.Functions;
 import core.objects.serializable.containers.Keywords;
-
+/**
+ * @author Clément Didier
+ */
 @XmlRootElement(name="service")
 public class Service extends Identifiable
 {
@@ -49,5 +51,25 @@ public class Service extends Identifiable
 	public Functions getFunctions()
 	{
 		return this.functions;
+	}
+	
+	/**
+	 * Obtient l'état d'existance du mot clé pour le service, ou les fonctions du service
+	 * @param keyword Le mot clé recherché
+	 */
+	@Override
+	public boolean hasKeyword(String keyword)
+	{
+		boolean functionsHasKeywords = false;
+		for(Function function : this.functions.getList())
+		{
+			if(function.hasKeyword(keyword))
+			{
+				functionsHasKeywords = true;
+				break;
+			}
+		}
+		
+		return this.keywords.exists(keyword) || functionsHasKeywords;
 	}
 }

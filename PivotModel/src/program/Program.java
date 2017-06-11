@@ -1,23 +1,19 @@
 package program;
-import java.util.ArrayList;
-import java.util.List;
-
-import core.objects.rule.Command;
 import core.objects.rule.ConditionParsingException;
 import core.objects.rule.ConditionalNode;
 import core.objects.rule.ConditionalTree;
 import core.objects.rule.DeviceNotFoundException;
 import core.objects.rule.EventLeaf;
 import core.objects.rule.LocationNotFoundException;
-import core.objects.rule.Rule;
 import core.objects.rule.ServiceNotFoundException;
 import core.objects.rule.TimeLeaf;
-import core.objects.serializable.Device;
 import core.utils.ConfigurationLoadingException;
 import habitat.AmbiguityResolver;
 import habitat.Habitat;
 import habitat.Instruction;
-
+/**
+ * @author Clément Didier
+ */
 public class Program
 {
 	public static void main(String[] args) throws LocationNotFoundException, DeviceNotFoundException, ConditionParsingException, ServiceNotFoundException, ConfigurationLoadingException 

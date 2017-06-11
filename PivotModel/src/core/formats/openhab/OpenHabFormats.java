@@ -1,5 +1,8 @@
 package core.formats.openhab;
 
+/**
+ * @author Clément Didier
+ */
 public enum OpenHabFormats 
 {
 	RULE_FORMAT						("rule %s\nwhen\n\t%s\nthen\n%s\nend"),

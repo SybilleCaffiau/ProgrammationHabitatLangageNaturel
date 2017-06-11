@@ -3,7 +3,9 @@ package core.objects.serializable;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import core.objects.serializable.containers.Keywords;
-
+/**
+ * @author Clément Didier
+ */
 @XmlRootElement(name="room")
 public class Room extends Identifiable {
 	

@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import core.formats.openhab.OpenHabFormats;
-
+/**
+ * @author Clément Didier
+ */
 public class ExecutionBlock 
 {
 	private ConditionalTree conditionalTree;

@@ -7,7 +7,9 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import core.objects.serializable.Service;
-
+/**
+ * @author Clément Didier
+ */
 @XmlRootElement(name="services")
 public class Services implements Container<Service>
 {
@@ -44,11 +46,14 @@ public class Services implements Container<Service>
 	}
 	
 	@Override
-	public Service getById(String id) {
+	public Services getById(String id) {
+		Services services = new Services();
+		
 		for(Service service : this.services)
 			if(service.getId().equals(id))
-				return service;
-		return null;
+				services.add(service);
+
+		return services;
 	}
 
 	@Override

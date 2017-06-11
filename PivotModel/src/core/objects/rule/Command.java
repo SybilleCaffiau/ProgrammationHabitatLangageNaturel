@@ -2,6 +2,9 @@ package core.objects.rule;
 
 import core.formats.openhab.OpenHabFormats;
 
+/**
+ * @author Clément Didier
+ */
 public class Command 
 {
 	/**

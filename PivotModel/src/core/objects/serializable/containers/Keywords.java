@@ -7,7 +7,9 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import core.utils.KeywordNormalizer;
-
+/**
+ * @author Clément Didier
+ */
 @XmlRootElement(name="keywords")
 public class Keywords
 {

@@ -11,6 +11,7 @@ import java.util.List;
 import core.formats.openhab.OpenHabFormats;
 
 /**
+ * @author Clément Didier
  * Représente un constructeur de règles (orienté OpenHab)
  */
 public class Rule 
@@ -94,6 +95,7 @@ public class Rule
 			}
 		}
 		
+		
 		// Cas de "OR" en tant que root
 		if(!mulitpleObjectsEvents.isEmpty())
 		{
@@ -133,7 +135,7 @@ public class Rule
 		if(node instanceof EventLeaf)
 		{
 			EventLeaf leaf = (EventLeaf)node;
-			if(leaf.isSupportingMultipleDevices())
+			if(leaf.isMutlipleCommands())
 			{
 				localResult.add(leaf);
 			}
