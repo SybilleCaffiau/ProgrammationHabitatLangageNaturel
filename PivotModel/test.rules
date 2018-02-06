@@ -1,0 +1,21 @@
+rule RuleTest
+when
+	Item VR1 changed to STOP or
+	Item VR2 changed to STOP
+then
+if((disco_domus.state == ON || (now.getHourOfDay() == 12 && now.getMinuteOfHour() == 0)) && (VR1.state == STOP && VR2.state == STOP)){
+	sendCommand(Camera_Cuisine, ON)
+	sendCommand(Camera_Evier, ON)
+}
+end
+
+rule RuleTest_complementary
+when
+	Item disco_domus changed to ON or
+	Time is noon
+then
+if((VR1.state == STOP && VR2.state == STOP)){
+	sendCommand(Camera_Cuisine, ON)
+	sendCommand(Camera_Evier, ON)
+}
+end
