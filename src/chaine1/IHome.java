@@ -334,6 +334,7 @@ public class IHome extends JFrame {
 	 * programme exprimé en langage naturel libre par l'habitant
 	 */
 	private void Traitement(String query){
+		//sera placé dans un package NF
 		System.out.println("je suis dans traitement");
 		newquery = query;
 		String oh[][] = new String [1][2]; //code openHAB avec le nom de la règle dans la première case et le corps de la règle dans la seconde
