@@ -28,7 +28,7 @@ import core.utils.ConfigurationManager;
 @XmlRootElement(name="habitat")
 public class Habitat
 {
-	private final static String DEFAULT_CONFIG_FILE_PATH = "environments/config-simulation.xml";
+	private final static String DEFAULT_CONFIG_FILE_PATH = "PivotModel/environnements/config-simulation.xml";
 	private static Habitat instance;
 	private static ConfigurationManager configurationManager = new ConfigurationManager(DEFAULT_CONFIG_FILE_PATH);
 	

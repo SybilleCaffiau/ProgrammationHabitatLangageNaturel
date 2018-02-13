@@ -16,7 +16,7 @@ import core.objects.serializable.containers.Services;
 import habitat.AmbiguityResolver;
 import habitat.Habitat;
 /**
- * @author Clément Didier
+ * @author Clément Didier Sybille Caffiau
  */
 @XmlRootElement(name="device")
 public class Device extends Identifiable 
@@ -121,5 +121,9 @@ public class Device extends Identifiable
 	public String getRoomId()
 	{
 		return this.roomId;
+	}
+	
+	public String toString(){
+		return (this.getId());
 	}
 }

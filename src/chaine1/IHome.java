@@ -7,6 +7,26 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import core.objects.rule.ConditionParsingException;
+import core.objects.rule.ConditionalNode;
+import core.objects.rule.ConditionalTree;
+import core.objects.rule.DeviceNotFoundException;
+import core.objects.rule.EventLeaf;
+import core.objects.rule.LocationNotFoundException;
+import core.objects.rule.ServiceNotFoundException;
+import core.objects.rule.TimeLeaf;
+import core.objects.serializable.containers.Devices;
+import core.objects.serializable.containers.Functions;
+import core.objects.serializable.Device;
+import core.objects.serializable.Service;
+import core.utils.ConfigurationLoadingException;
+import habitat.AmbiguityResolver;
+//import habitat.AmbiguityResolver;
+import habitat.Habitat;
+//import habitat.Instruction;
+//import program.AmbiguityResolverExample;
+import program.AmbiguityResolverExample;
+
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JMenu;
@@ -32,9 +52,31 @@ import java.awt.event.ActionEvent;
 
 /**
  * Interface utilisateur Java Swing pour la saisie de programme en langage naturel libre et la résolution d'ambiguïtés via le dialogue de désambiguïsation
- * @author Lorrie Rouillaux
+ * @author Lorrie Rouillaux, Clément Didier, Sybille Caffiau
  */
 @SuppressWarnings("serial")
+
+/*Code pour l'adaptation à un habitat particulier + prise en compte de règle un peu plus complexes
+ * Habitat habitat = Habitat.load(args[0]);
+
+// Utilisation d'une classe d'appel pour résoudre les ambiguités
+AmbiguityResolver resolverExample = new AmbiguityResolverExample();
+habitat.setAmbiguityResolver(resolverExample);
+
+// CONDITION
+ConditionalNode node = new ConditionalNode("et",
+		new EventLeaf("volet roulant", "arrêter"),
+		new ConditionalNode("ou",
+				new EventLeaf("disco", "allumer"),
+				TimeLeaf.parse("midi")));
+ConditionalTree tree = new ConditionalTree(node);
+
+System.out.println(habitat.generateRule("testRuleName", tree, 
+		new Instruction("camera", "chambre", "allumer"), 
+		new Instruction("disco", "eteindre")));
+}*/
+
+
 public class IHome extends JFrame {
 	private static IHome frame;
 	private JPanel contentPane;
@@ -50,7 +92,13 @@ public class IHome extends JFrame {
 	private JButton btnProposerUneNouvelle;
 	private JMenuItem mntmNouvelleRgle;
 	
-	private static Services S; //liste des appareils de l'habitat
+	//au lieu des service décrits dans une classe particulière, on va s'appuyer sur la configuration de l'habitat
+	//dans un premier temps on va considérer le fichier de config config-simulation.xml
+	private static Habitat habitat;
+	private static AmbiguityResolver resolverExample;
+	
+	//private static Services S; //liste des appareils de l'habitat de Lorrie
+	private static Devices D;//liste des appareils de l'habitat de Clement
 	private static String query = null; // programme exprimé en langage naturel libre par l'habitant
 	private static String newquery = null; //programme en langage naturel reformulé
 	private static boolean okTime; //attester que l'utilisateur a bien reformulé la donnée temporelle
@@ -64,6 +112,8 @@ public class IHome extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					
+					initHabitat();
 					frame = new IHome();
 					frame.setVisible(true);
 				} catch (Exception e) {
@@ -73,17 +123,31 @@ public class IHome extends JFrame {
 		});
 	}
 
+	
+	//au lieu des service décrits dans une classe particulière, on va s'appuyer sur la configuration de l'habitat
+	//dans un premier temps on va considérer le fichier de config config-simulation.xml
+	public static void initHabitat() throws LocationNotFoundException, DeviceNotFoundException, ConditionParsingException, ServiceNotFoundException, ConfigurationLoadingException{
+
+		habitat = Habitat.load("PivotModel/environnements/config-domus.xml");
+
+		// Utilisation d'une classe d'appel pour résoudre les ambiguités
+		AmbiguityResolver resolverExample = new AmbiguityResolverExample();
+
+		habitat.setAmbiguityResolver(resolverExample);
+		
+	}
+	
 	/**
 	 * Create the frame.
 	 */
 	public IHome() {
+		//à modifier
+		//S = new Services(); //liste de tous les appareils de l'habitat
+		//Device.createDevice(S); //création des appareils de l'habitat
 		
+		//Liste des appareils de l'habitat de Clément
+		D=habitat.getDevices();
 		
-		
-		
-		
-		S = new Services(); //liste de tous les appareils de l'habitat
-		Device.createDevice(S); //création des appareils de l'habitat
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 
@@ -207,8 +271,8 @@ public class IHome extends JFrame {
 						}
 						if (GenerationOH.getErrorDevice() && (okTime || !GenerationOH.getErrorTime())){ //erreur appareil
 							final JComboBox<String> jcbDevice = new JComboBox<String>();
-							for (Device d: S.getServices()){
-								jcbDevice.addItem(d.getNom()); //remplir la JComboBox avec tous les appareils de l'habitat
+							for (int k=0; k<D.getList().size(); k++){
+								jcbDevice.addItem(D.getList().get(k).getId()); //remplir la JComboBox avec tous les appareils de l'habitat
 							}
 							JPanel panel = new JPanel();
 							panel.add(new JLabel("Quel est l'appareil "+'"'+GenerationOH.getServiceUser()+'"'+" ?"));
@@ -217,14 +281,17 @@ public class IHome extends JFrame {
 							if (result == JOptionPane.OK_OPTION) {
 								okDevice = true;
 								String newD = jcbDevice.getSelectedItem().toString(); //récupérer le nom de l'appareil reformulé
-								for (Device d: S.getServices()){
-									if (d.getNom().equals(newD))
-										newDevice = d; //récupérer l'appareil correspondant à ce nom
+								for (int h=0; h<D.getList().size(); h++){
+									if (D.getList().get(h).getId().equals(newD)){
+										newDevice = D.getList().get(h); //récupérer l'appareil correspondant à ce nom
+										System.out.println("appareil identifié :"+newDevice.getId());
+									}
 								}
 								newquery = newquery.replace(GenerationOH.getServiceUser(), newD); //remplacer le nom de l'appareil non compris par le système par le nom de l'appareil reformulé
 								try{
+									//à revoir pour mettre avec les keywords
 									BufferedWriter bw1 = new BufferedWriter(new FileWriter(
-											"Synonymes/Appareils/"+newDevice.getNom()+".txt", true)); //apprentissage de l'appareil non compris au départ par le système en l'inscrivant dans le dictionnaire des synonymes
+											"Synonymes/Appareils/"+newDevice.getId()+".txt", true)); //apprentissage de l'appareil non compris au départ par le système en l'inscrivant dans le dictionnaire des synonymes
 									bw1.write("\n"+GenerationOH.getServiceUser());
 									bw1.close();
 								}catch (Exception e1){
@@ -238,13 +305,36 @@ public class IHome extends JFrame {
 						if (GenerationOH.getErrorFunction() && (okTime || !GenerationOH.getErrorTime()) && (okDevice || !GenerationOH.getErrorDevice())){ //erreur fonction
 							final JComboBox<String> jcbFunction = new JComboBox<String>();
 							Device d = GenerationOH.getDevice();
+							System.out.println("l'appareil est :"+d.getId());
 							if (d == null)
 								d = newDevice; //reprise de l'appareil reformulé s'il n'a pas été compris par le système avant
-							for (String f: d.getFonctions()){
-								jcbFunction.addItem(f); //remplissage de la JComboBox avec les fonctions disponibles pour l'appareil dont on souhaite effectuer une action
+							for (int l=0; l<d.getServices().getList().size();l++){
+								//pour tous les services associés au device
+								System.out.println("le service "+l+" est :"+d.getServices().getList().get(l).getServiceId());
+								String servDevice =d.getServices().getList().get(l).getServiceId();
+								//pour tous les services de l'habitat
+								for(int sh=0; sh<habitat.getServices().getList().size();sh++){
+									//pour chaque fonction de service
+									System.out.println("dans l'habitat, le service "+sh+" est :"+habitat.getServices().getList().get(sh).getId());
+									if(habitat.getServices().getList().get(sh).getId().equals(servDevice)){
+										System.out.println("on a trouvé le service");
+										for (int sd=0;sd<habitat.getServices().getList().get(sh).getFunctions().getList().size();sd++){
+											//pour chaque fonction
+											System.out.println("les fonction : "+habitat.getServices().getList().get(sh).getFunctions().getList().get(sd).getId());
+											//ajouter tous les mots clés
+											for(int ks=0; ks<habitat.getServices().getList().get(sh).getFunctions().getList().get(sd).getKeywords().getKeywords().size();ks++){
+												jcbFunction.addItem(habitat.getServices().getList().get(sh).getFunctions().getList().get(sd).getKeywords().getKeywords().get(ks)); //remplissage de la JComboBox avec les fonctions disponibles pour l'appareil dont on souhaite effectuer une action
+											}
+											
+									
+										}
+									}
+									else{System.out.println("pas cette fois ci");}
+								}
+								
 							}
 							JPanel panel = new JPanel();
-							panel.add(new JLabel("Que signifie "+'"'+GenerationOH.getFunctionUser()+'"'+" pour l'appareil "+d.getNom()+" ?"));
+							panel.add(new JLabel("Que signifie "+'"'+GenerationOH.getFunctionUser()+'"'+" pour l'appareil "+d.getId()+" ?"));
 							panel.add(jcbFunction);
 							int result = JOptionPane.showConfirmDialog(null, panel, "Reformulation de la fonction", JOptionPane.OK_CANCEL_OPTION);
 							if (result == JOptionPane.OK_OPTION) {
@@ -269,7 +359,7 @@ public class IHome extends JFrame {
 						}
 					}
 					if ( (okTime && GenerationOH.getErrorTime()) || (okFunction && GenerationOH.getErrorFunction()) || (okDevice && GenerationOH.getErrorDevice())){
-						System.out.println(newquery);
+						System.out.println("la phrase reformuler: "+newquery);
 						tfRgle.setText(newquery);
 						Traitement(newquery); //relancement de la chaine de traitement sur le programme en langage naturel libre reformulé
 					}
@@ -342,8 +432,12 @@ public class IHome extends JFrame {
 		System.out.println("avant treetagger "+query);
 		query = TreeTagger.toLemma(query);
 		System.out.println("***\nRequête lemmatisée: "+query+"\n***");
+		
 		//Normalisation (recherche de motifs d'expression et synonymes dans dicitonnaire)
-		String queryNormalise = Normalisation.normalisation(query);
+		//String queryNormalise = Normalisation.normalisation(query);
+		
+		String queryNormalise = query;
+		
 		System.out.println("***\nRequête normalisée: "+queryNormalise+"\n***");
 		//création du fichier contenant le programme exprimé en langage naturel par l'habitant
 		String queryBonsai = Bonsai.preTraitement(queryNormalise);
@@ -354,8 +448,11 @@ public class IHome extends JFrame {
 		String dep[][] = Bonsai.parseBonsai(); //récupération du tableau des relations de dépendances
 		//analyse sémantique - connexion au web service Luis et création du fichier json (par LUIS)
 		Luis.query(queryNormalise);
+		
+		
 		//generation de code openHAB après parsing du fichier JSon resultat de l'analyse sémantique
-		oh = GenerationOH.toOpenHab(query, Luis.jsonParsing(), S, dep);
+		//oh = GenerationOH.toOpenHab(query, Luis.jsonParsing(), S, dep);
+		oh = GenerationOH.toOpenHab(query, Luis.jsonParsing(), D, dep);
 		if (GenerationOH.getOk()){
 			lbFeedback.setForeground(Color.GREEN);
 			lbFeedback.setText("Réussite !");

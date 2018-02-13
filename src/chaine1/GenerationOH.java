@@ -3,6 +3,12 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import core.objects.serializable.containers.Devices;
+import core.objects.serializable.AssociatedService;
+import core.objects.serializable.containers.Services;
+import habitat.Habitat;
+import core.objects.serializable.Device;
+
 /**
  * Fusion des connaissances des analyses syntaxique et sémantique 
  * et génération du code openHAB correspondant au programme formulé en langage naturel libre par l'habitant
@@ -106,20 +112,19 @@ public class GenerationOH {
 		return retour;
 	}
 
+
+	
+	
 	/**
-	 * Méthode pour récupérer le sens du programme formulé par l'habitant en langage naturel libre (i.e. type de règle) et générer le code openHAB correspondant
+	 * 
 	 * @param query
-	 * Programme formulé par l'habitant en langage naturel libre
 	 * @param luis
-	 * Résultat de l'analyse sémantique
-	 * @param S
-	 * Liste des appareils de l'habitat
+	 * @param D
 	 * @param depBonsai
-	 * Résultat de l'analyse syntaxique
 	 * @return
-	 * Code openHAB généré en fonction du type de règle identifié
 	 */
-	public static String[][] toOpenHab(String query, String luis, Services S, String depBonsai[][]){
+	public static String[][] toOpenHab(String query, String luis, Devices D, String depBonsai[][]){
+		IHome.log(query);
 		IHome.log("Code OpenHab...\n");
 		String oh[][] = new String[1][2]; //code openHAB avec le nom de la règle dans la première case et le corps de la règle dans la seconde
 		String []tokens = null;
@@ -129,20 +134,28 @@ public class GenerationOH {
 		baction = false;
 		betat = false;
 		lignes = luis.split("\n"); 
+		
+		IHome.log("dans toOpenHab v2");
+		/*for(int i=0; i<D.getList().size();i++){
+			System.out.println(D.getList().get(i).toString());
+		}*/
 
 		for (String l : lignes){ //parcourir le résultat de l'analyse sémantique par luis
 			tokens = l.split(" "); 
 			if (tokens[0].toString().equals("intent")){ //récupérer le type de règle identifié
 				if(tokens[1].toString().equals("RegleTemporelle")){
-					oh = toOHregleTempo(query, luis, S);
+					//attention : confusion entre S et D dans l'interpretation des erreurs
+					oh = toOHregleTempo(query, luis, D);
 					btempo = true;
 				}
 				if(tokens[1].toString().equals("RegleAction")){
-					oh = toOHregleAction(query, luis, S, depBonsai);
+					IHome.log("cas régle déclenchée par une action : code de traitement à revoir");
+					//oh = toOHregleAction(query, luis, D, depBonsai);
 					baction = true;
 				}
 				if(tokens[1].toString().equals("RegleEtat")){
-					oh = toOHregleEtat(query, luis, S, depBonsai);
+					IHome.log("cas régle déclenchée par un état : code de traitement à revoir");
+					//oh = toOHregleEtat(query, luis, D, depBonsai);
 					betat = true;
 				}
 				if(tokens[1].toString().equals("None")){
@@ -169,7 +182,7 @@ public class GenerationOH {
 	 * @return
 	 * Code openHAB généré pour une règle temporelle
 	 */
-	public static String [][] toOHregleTempo(String query, String luis, Services S){
+	/*public static String [][] toOHregleTempo(String query, String luis, Services S){
 		String []tokens = null;
 		String []lignes = null;
 		String nomDevice = ""; //nom appareil compris par le système
@@ -275,6 +288,141 @@ public class GenerationOH {
 		}
 		else
 			return null;
+	}*/
+	/**
+	 * @author sybillecaffiau
+	 * @param query
+	 * @param luis
+	 * @param D
+	 * @return
+	 */
+	public static String [][] toOHregleTempo(String query, String luis, Devices D){
+		String []tokens = null;
+		String []lignes = null;
+		String nomDevice = ""; //nom appareil compris par le système
+		ArrayList <String> devicePossibles = new ArrayList();
+		String fonction = ""; //fonction comprise par le système
+		String time = null; //donnée temporelle comprise par le système
+		boolean trouve = false;
+		String oh[][] = new String [1][2]; //code openHAB avec le nom de la règle dans la première case et le corps de la règle dans la seconde
+		device = null;
+		noDevice = true;
+		noTime = true;
+		noFunction = true;
+		errorFunction = false;
+		errorDevice = false;
+		errorTime = false;
+		tempsUser = "";
+		serviceUser = "";
+		functionUser = "";
+		lignes = luis.split("\n"); 
+
+		for (String l : lignes){ //parcourir les services identifiés par l'analyse sémantique
+			tokens = l.split(" "); 
+			if (tokens[0].toString().equals("Service")){
+				noDevice = false;
+				for (int i=0; i<D.getList().size(); i++) {
+					Device d=D.getList().get(i); //matcher le service identifié par l'analyse sémantique avec les variables appareils du système
+					serviceUser = tokens[1];
+					System.out.println("comparaison :"+serviceUser);
+					if(d.getKeywords().exists(serviceUser)){
+						devicePossibles.add(d.getId());
+						//nomDevice = d.getId();
+						device = d;
+						trouve = true;
+						//break;
+					}
+				}
+				//si un seul device trouvé => on garde le déroulement actuel
+				//si plusieurs devices trouvé => besoin de reformuler (préciser)
+				if(!trouve || (devicePossibles.size()>1)){ //pas de match, donc erreur
+					errorDevice = true;
+				}
+			}
+		}
+
+		for (String l : lignes){ //parcourir les fonctions identifiées par l'analyse sémantique
+			tokens = l.split(" "); 
+			if (tokens[0].toString().equals("Fonctions")){
+				noFunction = false;
+				if (!noDevice && !errorDevice){ //si un service a été reconnu par le système
+					trouve = false;
+					for (int i=0; i<device.getServices().getList().size(); i++){
+						functionUser = tokens[1];
+						//pour tous les services du device identifié
+						Services services;
+						for (int m=0; m<device.getServices().getList().size();m++){
+							//on récupére les services génériques possibles dans l'habitat
+							services = Habitat.getInstance().getServices().getById(device.getServices().getList().get(0).getServiceId());
+							//si l'une des fonctions de l'un des services correspond aux mots clés alors on a trouvé le service associé
+							for(int sg=0; sg<services.getList().size(); sg++){
+								for(int sg2=0; sg2<services.getList().get(sg).getFunctions().getList().size();sg2++){
+									if(services.getList().get(0).getFunctions().getList().get(sg2).hasKeyword(functionUser)){ //matcher les fonctions connues par le système pour cet appareil avec la fonction identifiée par l'analyse sémantique
+										//System.out.println(fonction);
+										trouve = true;
+										/*if (functionUser.equals("allumer")){
+											fonction = "ON";
+										}
+										else if (functionUser.equals("éteindre")){
+											fonction = "OFF";
+										}
+										else{
+											errorFunction = true;
+										}*/
+										fonction=device.getServices().getList().get(i).getServiceId();
+										break;
+									}
+								}
+							}
+							
+						}
+						
+					}
+					if(!trouve){ //pas de match donc erreur dans la fonction identifiée
+						errorFunction = true;
+					}
+				}
+				else if (noDevice || errorDevice){ //si une fonction a été identifiée par l'analyse sémantique mais que l'appareil n'est pas reconnu par le système
+					//à revoir
+					functionUser = tokens[1];
+					if (functionUser.equals("allumer")){
+						fonction = "allumer";
+					}
+					else if (functionUser.equals("éteindre")){
+						fonction = "éteindre";
+					}
+					else{
+						errorFunction = true;
+					}
+				}
+			}
+
+			if (tokens[0].toString().equals("DateTime")){ //parcourir donnée temporelle identifiée par l'analyse sémantique
+				noTime = false;
+				tempsUser = tokens[1].toString();
+				time = convertHour(tempsUser); //conversion de la date en format openHAB
+				if (time == null) //échec de la conversion
+					errorTime = true;
+			}
+		}
+
+		if (!noDevice && !noFunction && !noTime && !errorDevice && !errorFunction && !errorTime){ //fusion des analyses syntaxique et sémantique réussie
+			oh = GenerationOH.regleTemporelle(nomDevice, fonction, time); //appel de la méthode pour générer le code openHAB
+			ok = true;
+		}
+		else //erreur dans la fusion des analyses syntaxique et sémantique
+			ok = false;
+
+		feedback = Dialogue.DialogueTempo(ok, noTime, errorTime, noDevice, errorDevice, noFunction, errorFunction, tempsUser, functionUser, serviceUser, fonction, device); //génération du feedback
+		System.out.println(feedback);
+
+		if (oh[0][1] != null && oh[0][0] != null){
+			System.out.println("***\n"+oh[0][1]+"\n***");
+			System.out.println("OK");
+			return oh;
+		}
+		else
+			return null;
 	}
 
 	/**
@@ -283,14 +431,14 @@ public class GenerationOH {
 	 * Programme formulé par l'habitant en langage naturel libre
 	 * @param luis
 	 * Résultat de l'analyse sémantique
-	 * @param S
+	 * @param D
 	 * Liste des appareils de l'habitat
 	 * @param depBonsai
 	 * Résultat de l'analyse syntaxique
 	 * @return
 	 * Code openHAB généré pour une règle d'action
 	 */
-	public static String [][] toOHregleAction(String query, String luis, Services S, String [][] depBonsai){
+	public static String [][] toOHregleAction(String query, String luis, Devices D, String [][] depBonsai){
 		String []tokens = null;
 		String []lignes = null;
 		ArrayList <Device> deviceTab = new ArrayList <Device>(); //liste des appareils identifiés par l'analyse sémantique
@@ -329,8 +477,8 @@ public class GenerationOH {
 						okS = false;
 					}
 					else{
-						for (Device s: S.getServices()){
-							if(s.getNom().equals(tokens[1])){
+						for (Device s: D.getList()){
+							if(s.hasKeyword(tokens[1])){
 								trouve = true;
 								deviceTab.add(s); //ajouter l'appareil à la liste des appareils identifiés par l'analyse sémantique	et reconnus par le système				
 							}
@@ -359,6 +507,7 @@ public class GenerationOH {
 						}
 						if(!okdep){
 							System.err.println("internal error -- toOpenHab class GenerationOH dependencies error -- récupérer indice fonction dans depBonsai");
+							//probleme avec dependances bonsai
 							okF = false;
 						}
 						else{
@@ -382,13 +531,16 @@ public class GenerationOH {
 								}
 							}
 							if(!trouve){
+								//probleme avec dependances bonsai
 								System.err.println("internal error -- toOpenHab class GenerationOH dependencies error -- matcher fonction/numéro dépendance");
 								okF = false;
 							}
 							else{
 								trouve = false;
 								//matcher la fonction avec son device et ajouter l'ajouter dans la liste des fonctions identifiées par l'analyse sémantique et reconnues par le système
-								for (String f : deviceTab.get(index).getFonctions()){ 
+								for (AssociatedService as : deviceTab.get(index).getServices().getList()){ 
+									//attention = service et non fonction
+									String f=as.getServiceId();
 									if(f.equals(tokens[1])){
 										trouve = true;
 										if (f.equals("allumer")){
@@ -488,11 +640,11 @@ public class GenerationOH {
 						}
 					}
 					//construction de la règle action en openHab 
-					if (trouve && todoDevice.getNom() != "" && whenDevice.getNom() != "" && (todoFunction.equals("allumer") 
+					if (trouve && todoDevice.getId() != "" && whenDevice.getId()!= "" && (todoFunction.equals("allumer") 
 							|| todoFunction.equals("éteindre")) && (whenFunction.equals("allumer") || whenFunction.equals("éteindre"))){ //si fusion des analyses réussie
 						ok = true;
 						feedback = "Vous avez réussi à programmer un automatisme !\n";
-						feedback += "Je dois "+todoFunction+" l'appareil "+todoDevice.getNom()+" si vous "+whenFunction+" l'appareil "+whenDevice.getNom()+".\n";
+						feedback += "Je dois "+todoFunction+" l'appareil "+todoDevice.getId()+" si vous "+whenFunction+" l'appareil "+whenDevice.getId()+".\n";
 						System.out.println(feedback);
 
 						if (todoFunction.equals("allumer"))
@@ -503,7 +655,7 @@ public class GenerationOH {
 							whenFunction = "ON";
 						else if(whenFunction.equals("éteindre"))
 							whenFunction = "OFF";
-						oh = GenerationOH.regleAction(todoDevice.getNom(), whenDevice.getNom(), todoFunction, whenFunction); //appel de la méthode générant le code openHAB d'une règle d'action
+						oh = GenerationOH.regleAction(todoDevice.getId(), whenDevice.getId(), todoFunction, whenFunction); //appel de la méthode générant le code openHAB d'une règle d'action
 					}
 					else{
 						ok = false;
@@ -551,7 +703,7 @@ public class GenerationOH {
 	 * @return
 	 * Code openHAB généré pour une règle état
 	 */
-	public static String [][] toOHregleEtat(String query, String luis, Services S, String [][] depBonsai){
+	public static String [][] toOHregleEtat(String query, String luis, Devices D, String [][] depBonsai){
 		String []tokens = null;
 		String []lignes = null;
 		ArrayList <Device> deviceTab = new ArrayList <Device>(); //liste des appareils identifiés par l'analyse sémantique
@@ -572,7 +724,7 @@ public class GenerationOH {
 		boolean okF = true; //vérifier donnée fonction non manquante
 		boolean okE = true; //vérifier donnée état non  manquante
 
-		lignes = luis.split("\n");
+		/*lignes = luis.split("\n");
 		if(depBonsai != null){
 			for (String l : lignes){
 				trouve = false;
@@ -593,10 +745,11 @@ public class GenerationOH {
 						okS = false;
 					}
 					else{
-						for (Device s: S.getServices()){
-							if(s.getNom().equals(tokens[1])){ //matcher le service identifié par l'analyse sémantique avec une variable appareil du système
+						for (int i=0; i<S.getList().size(); i++){
+							if(S.getList().get(i).hasKeyword(tokens[1])){ //matcher le service identifié par l'analyse sémantique avec une variable appareil du système
 								trouve = true;
-								deviceTab.add(s); //ajout de l'appareil à la liste des appareils reconnues par le système					
+								//rechercher l'ensemble des devices qui proposent ce service
+								//deviceTab.add(); //ajout de l'appareil à la liste des appareils reconnues par le système					
 							}
 						}
 						if(!trouve){
@@ -859,7 +1012,8 @@ public class GenerationOH {
 		else{
 			return null;
 		}
-	}
+	}*/
+		return null;}
 
 	/**
 	 * Méthode pour formaliser en langage openHAB la donnée temporelle formulée par l'habitant en langage naturel libre

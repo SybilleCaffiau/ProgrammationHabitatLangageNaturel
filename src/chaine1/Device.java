@@ -4,13 +4,14 @@ import java.util.ArrayList;
 /**
  * Gestion des appareils
  * @author Lorrie Rouillaux
+ * @deprecated
  */
 public class Device{
 
 	private String nom; //nom de l'appareil dans le système
 	private ArrayList <String> fonctions; //fonctions de l'appareil (ex : éteindre, allumer, etc)
 	private TypeDevice type; //type d'appareil (ex : lampe, tv, prise, etc)
-	private ArrayList <String> proprietes; //propriétés de l'appareil (ex : switch, son, etc)
+	//private ArrayList <String> proprietes; //propriétés de l'appareil (ex : switch, son, etc)
 
 	/**
 	 * @param nom
@@ -22,7 +23,7 @@ public class Device{
 		this.nom = nom;
 		this.type = t;
 		this.fonctions = new ArrayList<>();
-		this.proprietes = new ArrayList<>();
+		//this.proprietes = new ArrayList<>();
 	}
 
 	/**
@@ -57,9 +58,9 @@ public class Device{
 	 * @param p
 	 * Propriété à ajouter à l'appareil
 	 */
-	public void addProprietes(String p){
+	/*public void addProprietes(String p){
 		this.proprietes.add(p);
-	}
+	}*/
 
 	/**
 	 * Getter lise des fonctions de l'appareil
@@ -75,9 +76,9 @@ public class Device{
 	 * @return
 	 * Liste des propriétés de l'appareil
 	 */
-	public ArrayList<String> getPropriete(){
+	/*public ArrayList<String> getPropriete(){
 		return this.proprietes;
-	}
+	}*/
 
 	/**
 	 * Méthode de création des appareils
@@ -93,13 +94,13 @@ public class Device{
 		Device lampeSalon = new Device("lampe", TypeDevice.Lampe); //device lampe
 		lampeSalon.addFonctions("allumer"); 
 		lampeSalon.addFonctions("éteindre");
-		lampeSalon.addProprietes("couleur");
+		//lampeSalon.addProprietes("couleur");
 		S.add(lampeSalon);
 
 		Device priseVentilo = new Device("ventilateur", TypeDevice.Prise); //device priseVentilo
 		priseVentilo.addFonctions("allumer"); 
 		priseVentilo.addFonctions("éteindre");
-		priseVentilo.addProprietes("vitesse");
+		//priseVentilo.addProprietes("vitesse");
 		S.add(priseVentilo);
 	}
 

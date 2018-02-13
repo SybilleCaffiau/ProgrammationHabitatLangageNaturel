@@ -41,7 +41,7 @@ import org.junit.Test;
  */
 public class TestGenerationOH {
 	
-	public String modeleTest (String query){
+/*	public String modeleTest (String query){
 		String oh[][] = new String [1][2];
 		Services S = new Services(); //liste des appareils de l'habitat
 		Device.createDevice(S); //création des appareils
@@ -315,5 +315,5 @@ public class TestGenerationOH {
 			String resAttendu = "rule "+"tvOFFwhenEtatventilateurON"+"\nwhen\n\tItem ventilateur received update ON\nthen\n\tsendCommand(tv,OFF)\nend";
 			assertEquals(res, resAttendu);	
 			
-		}
+		}*/
 }

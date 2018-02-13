@@ -1,44 +1,37 @@
 {
-  "query": "à minuit allumer le lampe ",
+  "query": "lorsque je éteindre le lumière mettre en route la camer ",
   "intents": [
     {
-      "intent": "RegleTemporelle",
-      "score": 0.982675731
+      "intent": "RegleAction",
+      "score": 0.9952208
     },
     {
       "intent": "None",
-      "score": 0.0281581711
+      "score": 0.0495246947
+    },
+    {
+      "intent": "RegleTemporelle",
+      "score": 0.0272782464
     },
     {
       "intent": "RegleEtat",
-      "score": 0.0020155448
-    },
-    {
-      "intent": "RegleAction",
-      "score": 7.19065649E-13
+      "score": 0.00414566137
     }
   ],
   "entities": [
     {
-      "entity": "minuit",
-      "type": "DateTime",
-      "startIndex": 2,
-      "endIndex": 7,
-      "score": 0.8921358
-    },
-    {
-      "entity": "lampe",
+      "entity": "lumière",
       "type": "Service",
-      "startIndex": 20,
-      "endIndex": 24,
-      "score": 0.994725645
+      "startIndex": 23,
+      "endIndex": 29,
+      "score": 0.991665244
     },
     {
-      "entity": "allumer",
+      "entity": "éteindre",
       "type": "Fonctions",
-      "startIndex": 9,
-      "endIndex": 15,
-      "score": 0.978024662
+      "startIndex": 11,
+      "endIndex": 18,
+      "score": 0.9613108
     }
   ]
 }

@@ -65,4 +65,9 @@ public class Keywords
 		}
 		return false;
 	}
+	
+	
+	public List<String> getKeywords(){
+		return this.keywords;
+	}
 }

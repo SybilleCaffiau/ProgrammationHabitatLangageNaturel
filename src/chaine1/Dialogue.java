@@ -1,7 +1,9 @@
 package chaine1;
+
+import core.objects.serializable.Device;
 /**
  * Méthode pour générer le feedback
- * @author Lorrie Rouillaux
+ * @author Lorrie Rouillaux Sybille Caffiau
  */
 public class Dialogue {
 
@@ -39,10 +41,10 @@ public class Dialogue {
 					}
 					else { //appareil reconnu par le système
 						if (noFunction){ //pas de fonction reconnue dans LUIS
-							feedback +="Je n'ai pas compris ce que vous vouliez programmer sur l'appareil "+d.getNom()+".\n";
+							feedback +="Je n'ai pas compris ce que vous vouliez programmer sur l'appareil "+d.getId()+".\n";
 						}
 						else if (errorFunction){ //erreur dans la fonction
-							feedback +="Je n'ai pas compris ce que vous vouliez programmer sur l'appareil "+d.getNom()+".\nQue signifie "+function+" ?\n";
+							feedback +="Je n'ai pas compris ce que vous vouliez programmer sur l'appareil "+d.getId()+".\nQue signifie "+function+" ?\n";
 						}
 					}
 				}
@@ -75,13 +77,13 @@ public class Dialogue {
 					}
 					else { //appareil reconnu par le système
 						if (noFunction){ //pas de fonction reconnue dans LUIS
-							feedback += "Je n'ai pas compris ce que vous vouliez programmer sur l'appareil "+d.getNom()+".\n";
+							feedback += "Je n'ai pas compris ce que vous vouliez programmer sur l'appareil "+d.getId()+".\n";
 						}
 						else if (errorFunction){ //erreur dans la fonction
-							feedback += "Je n'ai pas compris ce que vous vouliez programmer sur l'appareil "+d.getNom()+".\nQue signifie "+function+" ?\n";
+							feedback += "Je n'ai pas compris ce que vous vouliez programmer sur l'appareil "+d.getId()+".\nQue signifie "+function+" ?\n";
 						}
 						else{
-							feedback += "J'ai bien compris que vous vouliez "+function+" l'appareil "+d.getNom()+".\n";
+							feedback += "J'ai bien compris que vous vouliez "+function+" l'appareil "+d.getId()+".\n";
 						}
 					}
 				}
@@ -113,13 +115,13 @@ public class Dialogue {
 					}
 					else { //appareil reconnu par le système
 						if (noFunction){ //pas de fonction reconnue dans LUIS
-							feedback += "Je n'ai pas compris ce que vous vouliez programmer sur l'appareil "+d.getNom()+".\n";
+							feedback += "Je n'ai pas compris ce que vous vouliez programmer sur l'appareil "+d.getId()+".\n";
 						}
 						else if (errorFunction){ //erreur dans la fonction
-							feedback += "Je n'ai pas compris ce que vous vouliez programmer sur l'appareil "+d.getNom()+".\nQue signifie "+function+" ?\n";
+							feedback += "Je n'ai pas compris ce que vous vouliez programmer sur l'appareil "+d.getId()+".\nQue signifie "+function+" ?\n";
 						}
 						else{
-							feedback += "J'ai bien compris que vous vouliez "+function+" l'appareil "+d.getNom()+".\n";
+							feedback += "J'ai bien compris que vous vouliez "+function+" l'appareil "+d.getId()+".\n";
 						}
 					}
 				}	

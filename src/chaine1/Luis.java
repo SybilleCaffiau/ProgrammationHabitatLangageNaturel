@@ -88,6 +88,7 @@ public class Luis {
 			// get entities
 			JSONArray entities= (JSONArray) jsonObject.get("entities");
 			Iterator<?> i = entities.iterator();
+			//pb ici, service "lampe" remplace l'instance de l'objet
 			while (i.hasNext()) {
 				JSONObject innerObjE = (JSONObject) i.next();
 				String e = innerObjE.get("entity").toString();

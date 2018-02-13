@@ -13,6 +13,7 @@ import habitat.Habitat;
 import habitat.Instruction;
 /**
  * @author Clément Didier
+ * @deprecated
  */
 public class Program
 {
