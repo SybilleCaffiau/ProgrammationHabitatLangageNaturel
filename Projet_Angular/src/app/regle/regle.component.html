@@ -1,0 +1,45 @@
+<div id="gestionRegles">
+  <div id="onglets">
+    <div [ngClass]="{'onglet': true,
+                     'ongletActif': ongletActif === 'Règles créées',
+                     'ongletNonActif': ongletActif !== 'Règles créées'}"
+                     (click)="ongletActif = 'Règles créées'">
+      <h2>Règles créées</h2>
+    </div>
+    <div [ngClass]="{'onglet': true,
+                     'ongletActif': ongletActif === 'Ambiguïtés',
+                     'ongletNonActif': ongletActif !== 'Ambiguïtés'}"
+                     (click)="ongletActif = 'Ambiguïtés'">
+      <h2>Ambiguïté</h2>
+    </div>
+  </div>
+  <div id="reglesCreees" *ngIf="ongletActif === 'Règles créées'">
+    <div>
+      <table>
+        <tr>
+          <td>Règle</td>
+          <td>Date</td>
+        </tr>
+        <tr *ngFor="let regle of etatSystem?.regles; let i = index" (click)="setSelectedRegle(i)" [class.active]="i == selectedRegle"
+        [ngClass]="{'regleIncomplete': !regle.texteStructuree.estComplete}">
+          <td>{{regle.texteNaturel}}
+          </td>
+          <td>{{regle.estampilleTemporelle}}</td>
+        </tr>
+      </table>
+    </div>
+    <button type="button" id="supprimerRegle" (click)="deleteRegle(selectedRegle)">Supprimer</button>
+  </div>
+  <div id="ambiguite" *ngIf="ongletActif === 'Ambiguïtés'">
+    <div *ngIf="etatSystem?.regleCourante.probleme != null">
+      <img src="assets/img/danger-icon.png" width="25px" height="25px">
+      <h3>Ambiguités détectées</h3>
+      <img src="assets/img/danger-icon.png" width="25px" height="25px">
+    </div>
+    <div *ngIf="etatSystem?.regleCourante.probleme == null">
+      <img src="assets/img/valid-icon.png" width="25px" height="25px">
+      <h3>Aucune ambiguïté</h3>
+      <img src="assets/img/valid-icon.png" width="25px" height="25px">
+    </div>
+  </div>
+</div>

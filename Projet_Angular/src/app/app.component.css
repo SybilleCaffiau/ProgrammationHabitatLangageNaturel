@@ -1,0 +1,41 @@
+#conteneurHaut {
+  height: 25%;
+  text-align: center;
+}
+
+#conteneurBas {
+  overflow: auto;
+  height: 75%;
+}
+
+#sousConteneurGauche {
+  float: left;
+  width: 49%;
+  height: 100%;
+  margin-left: 0.5%;
+}
+
+#sousConteneurDroit {
+  float: right;
+  width: 49%;
+  height: 100%;
+  margin-right: 0.5%;
+}
+
+#conteneurHaut p {
+  border: solid black 1px;
+  width: 80%;
+  display: inline-block;
+  height: 19px;
+}
+
+#conteneurHaut p span {
+  color: red;
+}
+
+#etatRegle {
+  border: solid black 2px;
+  margin-left: 0.5%;
+  margin-right: 0.5%;
+  margin-top: 15px;
+}

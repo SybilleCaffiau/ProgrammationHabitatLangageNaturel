@@ -1,0 +1,30 @@
+<div id="dialogue">
+  <h2>Dialogue</h2>
+  <form id="rechercheMessage">
+    <input type="text" name="recherche" value="Recherche..." disabled="true">
+    <input type="submit" value="Ok">
+  </form>
+  <div id="messages">
+    <div id="message" *ngFor="let msg of etatSystem?.regleCourante.dialogue">
+      <div *ngIf="msg.auteur === 'System'">
+        <div class="bulle-system">
+          <p>{{ msg.texte }}</p>
+          <p>{{ msg.date }}</p>
+        </div>
+        <img src="assets/img/house-icon.png" width="25px" height="25px">
+      </div>
+      <div *ngIf="msg.auteur !== 'System'">
+        <img src="assets/img/user-icon.png" width="25px" height="25px">
+        <div class="bulle-user" *ngIf="msg.auteur !== 'System'">
+          <p>{{ msg.texte }}</p>
+          <p>{{ msg.date }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <form id="envoieRegle">
+    <input type="text" name="regle" id="inputPhrase" [(ngModel)]="phraseEnvoye" [disabled]="etatSystem?.regleCourante.texteNaturel != null" ><br>
+    <input type="submit" value="Nouvelle Règle" (click)="nouvelleRegle()">
+    <input type="submit" value="Envoyer" [disabled]="etatSystem?.regleCourante.texteNaturel != null" (click)="envoyerRegle(phraseEnvoye)">
+  </form>
+</div>

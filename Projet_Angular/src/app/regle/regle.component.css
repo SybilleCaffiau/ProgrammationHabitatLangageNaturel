@@ -1,0 +1,89 @@
+#gestionRegles {
+  margin-left: 1px;
+  height: 99%;
+}
+
+#reglesCreees, #ambiguite {
+  border: 2px solid black;
+  background-color: #CCEFEA;
+  width: 98%;
+  height: 87%;
+  position: relative;
+}
+
+#reglesCreees div {
+  overflow: scroll;
+  max-height: 75%;
+  overflow-x: hidden;
+  border: solid black 1px;
+  margin: 10px;
+}
+
+#onglets {
+  text-align: left;
+  height: 13%;
+}
+
+.onglet {
+  background-color: #9FBAB7;
+  display: inline-block;
+  border: solid black 2px;
+  position: relative;
+  font-weight: bold;
+  cursor: pointer;
+  height: 100%;
+}
+
+.ongletActif {
+  border-bottom: 0px solid black;
+  background-color: #CCEFEA;
+  z-index: 10;
+}
+
+#reglesCreees table {
+  border-collapse: collapse;
+  background-color: #eafbfa;
+}
+
+#reglesCreees table tr:first-child {
+  font-weight: bold;
+}
+
+#reglesCreees table, th, td {
+   border: 1px solid black;
+}
+
+#reglesCreees td {
+   width: 100%;
+   cursor: pointer;
+}
+
+#reglesCreees tr.active {
+   background-color: #9FBAB7;
+}
+
+#reglesCreees button {
+  bottom: 10px;
+  position: absolute;
+}
+
+#ambiguite h3 {
+  display: inline-block;
+}
+
+#onglets h2 {
+  margin: 5px;
+  margin-top: 15px;
+}
+
+#ambiguite div {
+  margin-top: 10px;
+}
+
+.regleIncomplete {
+  background-color: #FEBEBE;
+}
+
+#reglesCreees tr.active.regleIncomplete {
+  background-color: #FE5454;
+}

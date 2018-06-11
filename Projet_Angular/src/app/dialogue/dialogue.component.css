@@ -1,0 +1,70 @@
+#dialogue {
+  background-color: #CCEFEA;
+  border: 2px solid black;
+  margin-left: 1px;
+  height: 99%;
+}
+
+#dialogue h2 {
+  margin-top: 10px;
+}
+
+#form input {
+  display: inline-block;
+}
+
+#envoieRegle {
+  border-top: solid black 1px;
+  padding-top: 5px;
+}
+
+#rechercheMessage {
+  text-align: left;
+  padding-left: 5px;
+  padding-bottom: 5px;
+  border-bottom: solid black 1px;
+}
+
+#rechercheMessage input[name="recherche"] {
+  width: 85%;
+}
+
+#envoieRegle input[name="regle"] {
+  width: 95%;
+}
+
+#messages {
+  overflow: scroll;
+  overflow-x: hidden;
+  background-color: #eafbfa;
+  height: 70%;
+}
+
+.message div {
+  display: inline-block;
+  width: 100%;
+}
+
+.bulle-system img {
+  float: right;
+}
+
+.bulle-user img {
+  float: left;
+}
+
+.bulle-user, .bulle-system {
+  border: solid blue 1px;
+  margin: 1px;
+  display: inline-block;
+  width: 80%;
+}
+
+.bulle-user p:last-child, .bulle-system p:last-child {
+  float: right;
+}
+
+div p {
+  margin: 0px;
+  text-align: left;
+}
