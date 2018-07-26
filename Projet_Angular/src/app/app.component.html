@@ -1,0 +1,19 @@
+<!--The content below is only a placeholder and can be replaced.-->
+<div id="conteneurHaut">
+  <h1>
+    {{ title }}
+  </h1>
+  <div id="etatRegle">
+    <h2>Etat de la règle courante</h2>
+    <p *ngIf=" etatSystem?.regleCourante.texteNaturel != null">{{ etatSystem?.regleCourante.texteNaturel }}</p>
+    <p *ngIf=" etatSystem?.regleCourante.texteNaturel == null">[EN ATTENTE]</p>
+  </div>
+</div>
+<div id="conteneurBas">
+  <div id="sousConteneurGauche">
+    <app-dialogue [etatSystem]='etatSystem'></app-dialogue>
+  </div>
+  <div id="sousConteneurDroit">
+    <app-regle [etatSystem]='etatSystem'></app-regle>
+  </div>
+</div>

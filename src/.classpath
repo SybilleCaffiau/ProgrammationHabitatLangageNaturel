@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path=""/>
+	<classpathentry exported="true" kind="src" path="/ProgrammationHabitatLangageNaturel"/>
+	<classpathentry kind="lib" path="/home/jerome/git/ProgrammationHabitatLangageNaturel/ProgrammationHabitatLangageNaturel/lib/json-simple-1.1.1.jar"/>
+	<classpathentry kind="lib" path="/home/jerome/git/ProgrammationHabitatLangageNaturel/ProgrammationHabitatLangageNaturel/lib/org.annolab.tt4j-1.2.1.jar"/>
+	<classpathentry kind="output" path=""/>
+</classpath>

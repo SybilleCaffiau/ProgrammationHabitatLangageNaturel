@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# Set these paths appropriately
+
+BIN="/home/jerome/git/ProgrammationHabitatLangageNaturel/ProgrammationHabitatLangageNaturel/src/TreeTagger/bin"
+CMD="/home/jerome/git/ProgrammationHabitatLangageNaturel/ProgrammationHabitatLangageNaturel/src/TreeTagger/cmd"
+LIB="/home/jerome/git/ProgrammationHabitatLangageNaturel/ProgrammationHabitatLangageNaturel/src/TreeTagger/lib"
+
+OPTIONS="-token -lemma -sgml"
+
+TOKENIZER=${CMD}/utf8-tokenize.perl
+TAGGER=${BIN}/tree-tagger
+PARFILE=${LIB}/russian-utf8.par
+
+# do tokenization
+$TOKENIZER $* |
+$TAGGER $OPTIONS $PARFILE

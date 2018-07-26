@@ -1,0 +1,18 @@
+#!/bin/sh
+
+# Set these paths appropriately
+
+BIN="/home/jerome/git/ProgrammationHabitatLangageNaturel/ProgrammationHabitatLangageNaturel/src/TreeTagger/bin"
+CMD="/home/jerome/git/ProgrammationHabitatLangageNaturel/ProgrammationHabitatLangageNaturel/src/TreeTagger/cmd"
+LIB="/home/jerome/git/ProgrammationHabitatLangageNaturel/ProgrammationHabitatLangageNaturel/src/TreeTagger/lib"
+
+OPTIONS="-token -lemma -sgml"
+
+TOKENIZER=${CMD}/utf8-tokenize.perl
+TAGGER=${BIN}/tree-tagger
+TAGGER=tree-tagger
+ABBR_LIST=${LIB}/portuguese-abbreviations-utf8
+PARFILE=${LIB}/portuguese2-utf8.par
+
+$TOKENIZER -p -a $ABBR_LIST $* |
+$TAGGER $OPTIONS $PARFILE
