@@ -1,8 +1,0 @@
-core.formats.openhab
-core.objects.rule
-core.objects.serializable
-core.objects.serializable.containers
-core.utils
-habitat
-program
-tests

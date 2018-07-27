@@ -1,6 +1,0 @@
-# Gitignore du projet eclipse
-
-/bin/
-/.settings/
-.classpath
-.project
