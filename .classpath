@@ -9,7 +9,6 @@
 	<classpathentry kind="lib" path="IHome.jar"/>
 	<classpathentry kind="lib" path="lib/json-simple-1.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/org.annolab.tt4j-1.2.1.jar"/>
-	<classpathentry kind="lib" path="TreeTagger/org.annolab.tt4j-1.2.1.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="bin1"/>
 </classpath>

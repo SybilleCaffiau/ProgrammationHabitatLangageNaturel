@@ -439,6 +439,8 @@ public class IHome extends JFrame {
 		String queryNormalise = query;
 		
 		System.out.println("***\nRequête normalisée: "+queryNormalise+"\n***");
+		
+		/* CHAINE V1 - OBOLETE
 		//création du fichier contenant le programme exprimé en langage naturel par l'habitant
 		String queryBonsai = Bonsai.preTraitement(queryNormalise);
 		System.out.println(queryBonsai);
@@ -482,6 +484,7 @@ public class IHome extends JFrame {
 			}
 
 		}
+		*/
 	}
 	
 	/**
